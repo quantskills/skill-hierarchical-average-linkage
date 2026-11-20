@@ -22,10 +22,25 @@
 
 - Catalog: `02.factor-selection`
 - Workflow: `factor-screening`
-- Validation: `listed`
+- Validation: `runnable`
 - License: `GPL-3.0-only`
 
-The repository currently defines the method, interfaces, and research boundaries but does not contain a runnable implementation. Do not claim `runnable` status until dependencies, a CLI, a synthetic example, expected outputs, and tests are present.
+The repository contains an execution-tested Python CLI, independent dependencies, a synthetic fixture generator, and pytest smoke tests.
+
+## Runnable implementation
+
+```bash
+python -m pip install -r requirements.txt
+python scripts/run_average_linkage.py \
+  --curves /path/to/train_curves.csv \
+  --output-dir /path/to/output \
+  --train-start 2020-01-01 \
+  --train-end 2023-12-31 \
+  --n-clusters 20
+python -m pytest -q
+```
+
+The primary structured output is `ranked_factor_set.json` using the `ranked-factor-set` 1.0.0 profile. Additional artifacts provide method-specific audit evidence.
 
 ## Entrypoints
 

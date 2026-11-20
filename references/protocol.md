@@ -28,3 +28,10 @@
 ## Promotion gate
 
 Keep `validation_level: listed` until the repository contains install instructions, dependencies, runnable code, example input/output, and a passing smoke test. Promotion to `verified` additionally requires data provenance, no-lookahead evidence, research evidence, and risk disclosure.
+
+## Runnable contract
+
+- Native local inputs are accepted through the documented CLI; the catalog interface is therefore `hybrid`.
+- The primary structured output is `ranked_factor_set.json` using QuantSkills Envelope/Profile version 1.0.0.
+- Method-specific CSV, JSON and NPY artifacts are audit evidence and do not replace the ranked-factor-set output.
+- Run the synthetic fixture and pytest suite before release.

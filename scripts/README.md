@@ -1,13 +1,14 @@
 # Scripts
 
-This project is currently a QuantSkills `listed` method contract. No runnable Hierarchical Average Linkage implementation is included yet.
+Install dependencies with `python -m pip install -r requirements.txt`. Run `run_average_linkage.py` from the repository root:
 
-Before changing `validation_level` to `runnable`, add:
+```bash
+python scripts/run_average_linkage.py \
+  --curves /path/to/train_curves.csv \
+  --output-dir /path/to/output \
+  --train-start 2020-01-01 \
+  --train-end 2023-12-31 \
+  --n-clusters 20
+```
 
-- a deterministic command-line entrypoint;
-- explicit dependency and Python-version declarations;
-- schema validation and fail-closed temporal-boundary checks;
-- a small public or synthetic example with expected outputs;
-- tests for determinism, leakage boundaries, failure handling, and output contracts.
-
-Do not add private datasets, credentials, generated signals, trained weights, caches, or temporary run logs.
+The command writes a registered ranked factor set, cluster assignments, method metadata, a correlation-distance matrix and audit receipts. Outputs belong outside the repository or under an ignored output directory.

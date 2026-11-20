@@ -1,4 +1,4 @@
-name: Validate skill contract
+name: Validate skill
 
 on: [push, pull_request]
 
@@ -19,14 +19,21 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 20
-      - name: Install Registry validation dependencies
+      - name: Install dependencies
         run: |
-          if [ -f contract-registry/requirements-dev.txt ]; then
-            python -m pip install -r contract-registry/requirements-dev.txt
-          else
-            python -m pip install PyYAML
-          fi
+          python -m pip install -r contract-registry/requirements-dev.txt
+          python -m pip install -r skill-hierarchical-average-linkage/requirements.txt pytest
+      - name: Run tests
+        run: python -m pytest -q skill-hierarchical-average-linkage/tests
+      - name: Check CLI
+        run: python skill-hierarchical-average-linkage/scripts/run_average_linkage.py --help
+      - name: Run synthetic smoke workflow
+        run: |
+          python skill-hierarchical-average-linkage/examples/generate_smoke_curves.py --output-file /tmp/average-smoke/curves.csv
+          python skill-hierarchical-average-linkage/scripts/run_average_linkage.py --curves /tmp/average-smoke/curves.csv --output-dir /tmp/average-smoke/out --train-start 2022-12-20 --train-end 2023-01-12 --n-clusters 3
       - name: Validate catalog contract
         run: python contract-registry/scripts/validate_skill.py skill-hierarchical-average-linkage --contract-mode enforce
+      - name: Validate output contract
+        run: python contract-registry/scripts/validate_contract.py /tmp/average-smoke/out/ranked_factor_set.json
       - name: Validate optional qsh-form
         run: node skill-hierarchical-average-linkage/scripts/validate-qsh-form.mjs skill-hierarchical-average-linkage/SKILL.md

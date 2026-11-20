@@ -19,3 +19,6 @@ runs/
 prices/
 real_runs/
 sources/
+
+.coverage
+htmlcov/

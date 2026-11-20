@@ -29,8 +29,8 @@ quantSkills:
   requires: []
   summary_zh: 使用训练期 IC 与 layer-spread 曲线执行 Average-linkage 凝聚性层次聚类。
   summary_en: Train-only average-linkage agglomerative clustering for representative factor selection.
-  status: draft
-  validation_level: listed
+  status: active
+  validation_level: runnable
   maintainer_type: community
   platforms:
   - cursor
@@ -39,17 +39,11 @@ quantSkills:
   - hermes
   - openclaw
   interface:
-    mode: structured
+    mode: hybrid
     envelope:
       name: quantskills-envelope
       version: 1.0.0
-    inputs:
-    - profile: factor-panel
-      version_range: '>=1.0.0 <2.0.0'
-      required: true
-    - profile: market-bar
-      version_range: '>=1.0.0 <2.0.0'
-      required: false
+    inputs: []
     outputs:
     - profile: ranked-factor-set
       version: 1.0.0
@@ -110,9 +104,20 @@ Read `references/protocol.md` before preparing inputs or interpreting outputs.
 - Limitations: disclose sample dependence, instability, approximation, missingness, and any untested operating regime.
 - Risk boundary: outputs are research evidence only and are not investment advice, promised returns, or production approval.
 
-## Current Project Status
+## Runnable Implementation
 
-This repository is a QuantSkills `listed` draft. It currently defines a portable method contract but does not yet contain a runnable implementation. Do not claim that it executed the method until scripts, dependencies, example input/output, and tests have been added and verified.
+Install dependencies with `python -m pip install -r requirements.txt` and run:
+
+```bash
+python scripts/run_average_linkage.py \
+  --curves /path/to/train_curves.csv \
+  --output-dir /path/to/output \
+  --train-start 2020-01-01 \
+  --train-end 2023-12-31 \
+  --n-clusters 20
+```
+
+The CLI writes `ranked_factor_set.json` using the registered `ranked-factor-set` 1.0.0 profile together with method-specific audit artifacts. Generate synthetic smoke inputs from `examples/` and run `python -m pytest -q` before release.
 
 ## Optional qsh-form
 
