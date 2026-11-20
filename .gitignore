@@ -1,7 +1,20 @@
 __pycache__/
-*.pyc
+*.py[cod]
+.pytest_cache/
+.venv/
+venv/
+build/
+dist/
+*.egg-info/
+.env
+.env.*
+output/
+outputs/
+runs/
+*.log
 .DS_Store
-# Git 卫生:原始导出与大数据不入库
+
+# Large or private research data
 *.parquet
 prices/
 real_runs/

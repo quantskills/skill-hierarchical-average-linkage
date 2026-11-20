@@ -1,4 +1,4 @@
-name: Validate template contract
+name: Validate skill contract
 
 on: [push, pull_request]
 
@@ -8,7 +8,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          path: skill-template
+          path: skill-hierarchical-average-linkage
       - uses: actions/checkout@v4
         with:
           repository: quantskills/registry
@@ -27,12 +27,6 @@ jobs:
             python -m pip install PyYAML
           fi
       - name: Validate catalog contract
-        run: |
-          validator=contract-registry/scripts/validate_skill.py
-          if python "$validator" --help | grep -q -- "--contract-mode"; then
-            python "$validator" skill-template --contract-mode enforce
-          else
-            python skill-template/scripts/validate-registry-compat.py "$validator" skill-template
-          fi
+        run: python contract-registry/scripts/validate_skill.py skill-hierarchical-average-linkage --contract-mode enforce
       - name: Validate optional qsh-form
-        run: node skill-template/scripts/validate-qsh-form.mjs skill-template/SKILL.md
+        run: node skill-hierarchical-average-linkage/scripts/validate-qsh-form.mjs skill-hierarchical-average-linkage/SKILL.md

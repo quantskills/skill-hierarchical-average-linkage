@@ -1,48 +1,126 @@
 ---
-name: skill-template
-description: A canonical QuantSkills skill template for authoring portable, catalog-contract v2 skill projects across Cursor, Claude Code, Codex, Hermes, and OpenClaw. Use when creating or migrating a QuantSkills skill repository.
+name: skill-hierarchical-average-linkage
+description: Select representative factors with train-only average-linkage agglomerative clustering. Use when an
+  agent needs balanced hierarchical factor clustering based on pairwise average distances. Do not use this skill
+  when complete-linkage, Ward geometry, or a density-based outlier model is required.
 quantSkills:
   schema_version: 2.0.0
   organization: quantskills
   organization_url: https://github.com/quantskills
-  repository: skill-template
-  repository_url: https://github.com/quantskills/skill-template
+  repository: skill-hierarchical-average-linkage
+  repository_url: https://github.com/quantskills/skill-hierarchical-average-linkage
   project_type: skill
   license: GPL-3.0-only
-  maintainer: abgyjaguo
-  collection: infrastructure
-  catalog: {category: "10", subcategory: 10.skill-template}
-  workflow: {primary_stage: orchestration, workflow_stages: [orchestration]}
-  tags: [template, skill-authoring]
+  maintainer: X-Tech-group
+  collection: factor-research
+  catalog:
+    category: '02'
+    subcategory: 02.factor-selection
+  workflow:
+    primary_stage: factor-screening
+    workflow_stages:
+    - factor-screening
+    - evaluation
+  tags:
+  - factor-selection
+  - hierarchical-clustering
+  - agglomerative
+  - average-linkage
   requires: []
-  summary_zh: 用于创建可移植 QuantSkills 技能项目的规范模板。
-  summary_en: Canonical template for portable QuantSkills skill projects.
-  status: active
-  validation_level: runnable
+  summary_zh: 使用训练期 IC 与 layer-spread 曲线执行 Average-linkage 凝聚性层次聚类。
+  summary_en: Train-only average-linkage agglomerative clustering for representative factor selection.
+  status: draft
+  validation_level: listed
   maintainer_type: community
-  platforms: [cursor, claude-code, codex, hermes, openclaw]
-  interface: {mode: not-applicable, reason: orchestration-only}
+  platforms:
+  - cursor
+  - claude-code
+  - codex
+  - hermes
+  - openclaw
+  interface:
+    mode: structured
+    envelope:
+      name: quantskills-envelope
+      version: 1.0.0
+    inputs:
+    - profile: factor-panel
+      version_range: '>=1.0.0 <2.0.0'
+      required: true
+    - profile: market-bar
+      version_range: '>=1.0.0 <2.0.0'
+      required: false
+    outputs:
+    - profile: ranked-factor-set
+      version: 1.0.0
+    adapters: []
 ---
+# Hierarchical Average Linkage
 
-# QuantSkills Skill Template
+Select representative factors with train-only average-linkage agglomerative clustering.
 
-Use this repository as the canonical starting point for a portable QuantSkills skill.
+## Use This Skill When
 
-## Authoring boundary
+- Use it when an agent needs balanced hierarchical factor clustering based on pairwise average distances.
+- Do not use this skill when complete-linkage, Ward geometry, or a density-based outlier model is required.
+- Treat all outputs as quantitative research artifacts, not investment advice or production approval.
 
-- Keep secrets and private datasets out of the repository.
-- Cite upstream sources and preserve required licenses when adapting material.
-- For quantitative projects, disclose data sources, assumptions, parameters, limitations, risk boundaries, and research-only status. Never promise returns or present output as investment advice.
-- The root declaration describes this `skill-template` repository. A copy-ready factor-evaluation declaration is in `references/declaration-example.yml`.
+## Inputs
+
+- A schema-compatible factor panel with stable factor identifiers.
+- Optional market bars or labels when the declared factor-curve construction needs them.
+- Explicit Train/Valid/OOS boundaries, universe rules, method parameters, and output directory.
+
+Read `references/protocol.md` before preparing inputs or interpreting outputs.
+
+## Method Decisions
+
+- Build a finite symmetric Train-only distance matrix with a zero diagonal.
+- Freeze the cluster-count or cut-height rule before selecting real-factor representatives.
+
+## Workflow
+
+1. Validate the factor panel, candidate manifest, keys, finite values, and non-overlapping time boundaries.
+2. Freeze candidate identifiers, parameters, preprocessing, seed, and failure policy before computation.
+3. Fit preprocessing, similarities, distances, embeddings, or graphs on Train only.
+4. Run the declared method and record convergence, outliers, exclusions, and assignments.
+5. Select real candidate representatives with a deterministic score and tie-break.
+6. Freeze the ranked factor set before any OOS access.
+7. Use Valid only for a predeclared comparison; keep OOS diagnostic and non-confirmatory.
+
+## Output Contract
+
+- Emit a QuantSkills `quantskills-envelope` with profile `ranked-factor-set` version `1.0.0`.
+- Preserve a resolved configuration, candidate outcomes, method diagnostics, date boundaries, seed, and input/output SHA256 receipts.
+- Never silently drop failed factors, non-finite distances, outliers, disconnected nodes, or non-converged runs.
+
+## Research Invariants
+
+- Train may determine preprocessing, structure, clustering, and representatives.
+- Valid may be used only by a comparison or selection rule declared before it is read.
+- OOS data must not influence construction, tuning, selection, stopping, or method choice.
+- Every selected representative must be a traceable member of the original candidate pool.
+- Record data provenance, assumptions, limitations, and all deviations from the declared protocol.
+
+## Research Disclosure
+
+- Data source: use only public data, user-provided local data, or material the user has the right to use; record provenance.
+- Assumptions: document time semantics, universe construction, factor direction, missing-value handling, and label availability.
+- Parameters: persist every threshold, seed, split boundary, preprocessing option, and method setting.
+- Limitations: disclose sample dependence, instability, approximation, missingness, and any untested operating regime.
+- Risk boundary: outputs are research evidence only and are not investment advice, promised returns, or production approval.
+
+## Current Project Status
+
+This repository is a QuantSkills `listed` draft. It currently defines a portable method contract but does not yet contain a runnable implementation. Do not claim that it executed the method until scripts, dependencies, example input/output, and tests have been added and verified.
 
 ## Optional qsh-form
 
-The `qsh-form` block below is an optional UI enhancement. It is independent of catalog data-interface compatibility; removing it keeps this template contract-valid.
-
 ```json qsh-form
-{"version":1,"task":{"placeholder":"Describe the research task","required":true},"fields":[],"prompt_template":"Handle this task: {{task}}. Attachments: {{#attachments}}"}
+{"version":1,"task":{"placeholder":"Describe the Hierarchical Average Linkage research task and attach the required local inputs","required":true},"fields":[],"prompt_template":"Handle this task: {{task}}. Attachments: {{#attachments}}"}
 ```
 
 ## References
 
-Use `references/source_boundary.md` for source boundaries.
+- `references/protocol.md`: input, temporal, output, and validation contract.
+- `references/source_boundary.md`: source, licensing, privacy, and research boundaries.
